@@ -1,9 +1,9 @@
 import java.util.Scanner;
 
 /**
- * FactoryRobotHazardAnalyzer - UC6
+ * FactoryRobotHazardAnalyzer - UC7
  *
- * Uses a custom exception to handle invalid robot hazard inputs.
+ * Encapsulates machinery state risk mapping using structured logic.
  */
 public class FactoryRobotHazardAnalyzer {
 
@@ -34,13 +34,7 @@ public class FactoryRobotHazardAnalyzer {
     }
 
     /**
-     * Validates inputs and calculates hazard risk score.
-     *
-     * @param armPrecision arm precision value
-     * @param workerDensity number of workers
-     * @param machineryState machinery condition
-     * @return hazard risk score
-     * @throws RobotSafetyException if validation fails
+     * Calculates hazard risk after validating inputs.
      */
     public static double calculateHazardRisk(
             double armPrecision,
@@ -57,20 +51,27 @@ public class FactoryRobotHazardAnalyzer {
                     "Error: Worker density must be 1-20");
         }
 
-        double machineRiskFactor;
+        double machineRiskFactor = getMachineRiskFactor(machineryState);
+
+        return ((1.0 - armPrecision) * 15.0)
+                + (workerDensity * machineRiskFactor);
+    }
+
+    /**
+     * Maps machinery state to risk factor.
+     */
+    public static double getMachineRiskFactor(String machineryState)
+            throws RobotSafetyException {
 
         if (machineryState.equals("Worn")) {
-            machineRiskFactor = 1.3;
+            return 1.3;
         } else if (machineryState.equals("Faulty")) {
-            machineRiskFactor = 2.0;
+            return 2.0;
         } else if (machineryState.equals("Critical")) {
-            machineRiskFactor = 3.0;
+            return 3.0;
         } else {
             throw new RobotSafetyException(
                     "Error: Unsupported machinery state");
         }
-
-        return ((1.0 - armPrecision) * 15.0)
-                + (workerDensity * machineRiskFactor);
     }
 }
